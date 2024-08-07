@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import "@expo/metro-runtime";
 import {
     FlatList,
     Text,
