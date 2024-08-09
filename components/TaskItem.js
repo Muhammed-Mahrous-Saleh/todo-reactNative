@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { styles } from "../styles/styles";
 import { useNavigation } from "@react-navigation/native";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import TodoDetails from "../screens/TodoDetails";
 
 export default function TaskItem({ todo, handleCheck, handleDelete }) {
     const navigation = useNavigation();
