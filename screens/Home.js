@@ -10,64 +10,91 @@ import {
 import InputField from "../components/InputField";
 import { styles } from "../styles/styles";
 import TaskItem from "../components/TaskItem";
-import { DATA, updateData } from "../shared/db";
 import FilterOptions from "../components/FilterOptions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddForm from "../components/AddForm";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
     const [selectedFilter, setSelectedFilter] = useState("0");
-    const [data, setData] = useState(DATA);
+    const [dataList, setDataList] = useState([]);
+
+    const _storeData = async (data) => {
+        try {
+            const jsonValue = JSON.stringify(data);
+            await AsyncStorage.setItem("toDoTasks", jsonValue);
+            setDataList(data);
+        } catch (error) {
+            console.error("Failed to store data:", error);
+        }
+    };
+
+    const _retrieveData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem("toDoTasks");
+            if (jsonValue !== null) {
+                setDataList(JSON.parse(jsonValue));
+            } else {
+                _storeData([]); // Initialize with an empty array if no data is found
+            }
+        } catch (error) {
+            console.error("Failed to retrieve data:", error);
+        }
+    };
+
+    useEffect(() => {
+        _retrieveData();
+    }, []);
+
     const handleFilterSelect = (id) => {
         setSelectedFilter(id);
     };
     const handleCheck = (task) => {
-        setData((prevData) =>
-            prevData.map((item) =>
-                item.id !== task.id
-                    ? item
-                    : task.status === "1"
-                    ? (item.status = "2") && item
-                    : (item.status = "1") && item
-            )
+        const updatedData = dataList.map((item) =>
+            item.id !== task.id
+                ? item
+                : task.status === "1"
+                ? { ...item, status: "2" }
+                : { ...item, status: "1" }
         );
-        // change data
-        updateData([...data]);
-        // const itemIndex = DATA.findIndex((item) => item.id === task.id);
-        // DATA.splice(itemIndex, 1, task);
-        // console.log("DATA", DATA);
+        _storeData(updatedData);
     };
     const handleDelete = (task) => {
-        setData((prevData) => prevData.filter((item) => item.id !== task.id));
-        // change data
-        updateData([...data]);
-        // const itemIndex = DATA.findIndex((item) => item.id === task.id);
-        // DATA.splice(itemIndex, 1);
-        // console.log("DATA", DATA);
+        const updatedData = dataList.filter((item) => item.id !== task.id);
+        _storeData(updatedData);
     };
     const handleAddTask = (task) => {
-        setData((prevData) => [task, ...prevData]);
-        // change data
-        updateData([task, ...data]);
-        // DATA.push(task);
-        // console.log("DATA", DATA);
+        const updatedData = [task, ...dataList];
+        _storeData(updatedData);
     };
     return (
         <>
             <SafeAreaView style={styles.container}>
+                <Text style={{ ...styles.title, marginBottom: 15 }}>
+                    TODO APP
+                </Text>
                 <AddForm handleAddTask={handleAddTask} />
                 <View style={styles.divider} />
                 <FilterOptions
                     handleFilterSelect={handleFilterSelect}
                     selectedFilter={selectedFilter}
                 />
-                {(DATA.length === 0 && <Text>No Data</Text>) || (
+                {(dataList.length === 0 && (
+                    <Text
+                        style={{
+                            flex: 2,
+                            marginBottom: 25,
+                        }}
+                    >
+                        No Data
+                    </Text>
+                )) || (
                     <FlatList
                         style={{
                             flex: 2,
                             marginBottom: 25,
                         }}
-                        data={DATA}
+                        data={dataList}
                         renderItem={({ item }) =>
                             ((selectedFilter !== "0" &&
                                 item.status === selectedFilter) ||

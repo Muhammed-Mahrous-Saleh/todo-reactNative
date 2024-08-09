@@ -7,7 +7,7 @@ export default function AddForm({ handleAddTask }) {
     const [titleText, setTitleText] = React.useState("");
     const [descText, setDescText] = React.useState("");
     return (
-        <View style={{ display: "flex", gap: 8 }}>
+        <View style={{ display: "flex", gap: 15 }}>
             <TextInput
                 style={styles.input}
                 placeholder={"Task Title"}
