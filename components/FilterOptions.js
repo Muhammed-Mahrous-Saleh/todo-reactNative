@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FlatList, Text, TouchableOpacity } from "react-native";
 import { styles } from "../styles/styles";
-import { FILTER_OPTIONS } from "../data/db";
+import { FILTER_OPTIONS } from "../shared/db";
 
 export default function FilterOptions({ selectedFilter, handleFilterSelect }) {
     return (

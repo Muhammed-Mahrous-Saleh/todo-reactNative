@@ -1,11 +1,59 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import { styles } from "../styles/styles";
+import { useNavigation } from "@react-navigation/native";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Feather from "@expo/vector-icons/Feather";
+import TodoDetails from "../screens/TodoDetails";
 
-export default function TaskItem({ title }) {
+export default function TaskItem({ todo, handleCheck, handleDelete }) {
+    const navigation = useNavigation();
     return (
-        <View style={styles.item}>
-            <Text style={styles.item_title}>{title}</Text>
-        </View>
+        <TouchableOpacity
+            onPress={() => navigation.navigate("TodoDetails", { todo })}
+            style={{
+                marginVertical: 4,
+                width: "100%",
+                borderWidth: 1,
+                borderBlockColor: "grey",
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                flexDirection: "row",
+                justifyContent: "space-between",
+            }}
+        >
+            <View>
+                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                    {todo.title}
+                </Text>
+                <Text>{todo.comment}</Text>
+            </View>
+            <View
+                style={{
+                    flexDirection: "row",
+                    gap: 15,
+                    alignItems: "center",
+                }}
+            >
+                <MaterialCommunityIcons
+                    name={
+                        todo.status === "2"
+                            ? "checkbox-marked"
+                            : "checkbox-blank-outline"
+                    }
+                    size={20}
+                    color={todo.status === "2" ? "green" : "gray"}
+                    onPress={() => handleCheck(todo)}
+                />
+                <MaterialCommunityIcons
+                    name="trash-can"
+                    size={20}
+                    color="red"
+                    onPress={() => handleDelete(todo)}
+                />
+            </View>
+        </TouchableOpacity>
     );
 }
