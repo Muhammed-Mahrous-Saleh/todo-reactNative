@@ -6,6 +6,10 @@ import {
     TouchableOpacity,
     View,
     SafeAreaView,
+    Alert,
+    Modal,
+    StyleSheet,
+    Pressable,
 } from "react-native";
 import { styles } from "../styles/styles";
 import TaskItem from "../components/TaskItem";
@@ -17,6 +21,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Home() {
     const [selectedFilter, setSelectedFilter] = useState("0");
     const [dataList, setDataList] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
 
     const _storeData = async (data) => {
         try {
@@ -59,8 +65,13 @@ export default function Home() {
         _storeData(updatedData);
     };
     const handleDelete = (task) => {
+        setModalVisible(true);
+        setTaskToDelete(task);
+    };
+    const handleDeleteAfterConfirm = (task) => {
         const updatedData = dataList.filter((item) => item.id !== task.id);
         _storeData(updatedData);
+        setModalVisible(!modalVisible);
     };
     const handleAddTask = (task) => {
         const updatedData = [task, ...dataList];
@@ -69,6 +80,50 @@ export default function Home() {
     return (
         <>
             <SafeAreaView style={styles.container}>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                        setTaskToDelete(null);
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalText}>
+                                Are you sure, you want to delete "
+                                {taskToDelete?.title}" task?
+                            </Text>
+                            <View style={{ flexDirection: "row", gap: 10 }}>
+                                <Pressable
+                                    style={{
+                                        ...styles.button,
+                                        ...styles.buttonClose,
+                                        backgroundColor: "gray",
+                                    }}
+                                    onPress={() =>
+                                        setModalVisible(!modalVisible)
+                                    }
+                                >
+                                    <Text style={styles.textStyle}>Cancel</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={{
+                                        ...styles.button,
+                                        ...styles.buttonClose,
+                                        backgroundColor: "red",
+                                    }}
+                                    onPress={() =>
+                                        handleDeleteAfterConfirm(taskToDelete)
+                                    }
+                                >
+                                    <Text style={styles.textStyle}>Delete</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
                 <Text style={{ ...styles.title, marginBottom: 15 }}>
                     TODO APP
                 </Text>
