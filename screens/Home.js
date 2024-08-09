@@ -10,6 +10,7 @@ import {
     Modal,
     StyleSheet,
     Pressable,
+    ImageBackground,
 } from "react-native";
 import { styles } from "../styles/styles";
 import TaskItem from "../components/TaskItem";
@@ -79,91 +80,102 @@ export default function Home() {
     };
     return (
         <>
-            <SafeAreaView style={styles.container}>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        setModalVisible(!modalVisible);
-                        setTaskToDelete(null);
-                    }}
-                >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalText}>
-                                Are you sure, you want to delete "
-                                {taskToDelete?.title}" task?
-                            </Text>
-                            <View style={{ flexDirection: "row", gap: 10 }}>
-                                <Pressable
-                                    style={{
-                                        ...styles.button,
-                                        ...styles.buttonClose,
-                                        backgroundColor: "gray",
-                                    }}
-                                    onPress={() =>
-                                        setModalVisible(!modalVisible)
-                                    }
-                                >
-                                    <Text style={styles.textStyle}>Cancel</Text>
-                                </Pressable>
-                                <Pressable
-                                    style={{
-                                        ...styles.button,
-                                        ...styles.buttonClose,
-                                        backgroundColor: "red",
-                                    }}
-                                    onPress={() =>
-                                        handleDeleteAfterConfirm(taskToDelete)
-                                    }
-                                >
-                                    <Text style={styles.textStyle}>Delete</Text>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
-                <Text style={{ ...styles.title, marginBottom: 15 }}>
-                    TODO APP
-                </Text>
-                <AddForm handleAddTask={handleAddTask} />
-                <View style={styles.divider} />
-                <FilterOptions
-                    handleFilterSelect={handleFilterSelect}
-                    selectedFilter={selectedFilter}
-                />
-                {(dataList.length === 0 && (
-                    <Text
-                        style={{
-                            flex: 2,
-                            marginBottom: 25,
+            <ImageBackground
+                source={require("../assets/backgroundImage.jpg")}
+                style={styles.background}
+            >
+                <SafeAreaView style={styles.container}>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                            setModalVisible(!modalVisible);
+                            setTaskToDelete(null);
                         }}
                     >
-                        No Data
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.modalText}>
+                                    Are you sure, you want to delete "
+                                    {taskToDelete?.title}" task?
+                                </Text>
+                                <View style={{ flexDirection: "row", gap: 10 }}>
+                                    <Pressable
+                                        style={{
+                                            ...styles.button,
+                                            ...styles.buttonClose,
+                                            backgroundColor: "gray",
+                                        }}
+                                        onPress={() =>
+                                            setModalVisible(!modalVisible)
+                                        }
+                                    >
+                                        <Text style={styles.textStyle}>
+                                            Cancel
+                                        </Text>
+                                    </Pressable>
+                                    <Pressable
+                                        style={{
+                                            ...styles.button,
+                                            ...styles.buttonClose,
+                                            backgroundColor: "red",
+                                        }}
+                                        onPress={() =>
+                                            handleDeleteAfterConfirm(
+                                                taskToDelete
+                                            )
+                                        }
+                                    >
+                                        <Text style={styles.textStyle}>
+                                            Delete
+                                        </Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                    <Text style={{ ...styles.title, marginBottom: 15 }}>
+                        TODO APP
                     </Text>
-                )) || (
-                    <FlatList
-                        style={{
-                            flex: 2,
-                            marginBottom: 25,
-                        }}
-                        data={dataList}
-                        renderItem={({ item }) =>
-                            ((selectedFilter !== "0" &&
-                                item.status === selectedFilter) ||
-                                selectedFilter === "0") && (
-                                <TaskItem
-                                    todo={item}
-                                    handleCheck={handleCheck}
-                                    handleDelete={handleDelete}
-                                />
-                            )
-                        }
-                        keyExtractor={(item) => item.id}
+                    <AddForm handleAddTask={handleAddTask} />
+                    <View style={styles.divider} />
+                    <FilterOptions
+                        handleFilterSelect={handleFilterSelect}
+                        selectedFilter={selectedFilter}
                     />
-                )}
-            </SafeAreaView>
+                    {(dataList.length === 0 && (
+                        <Text
+                            style={{
+                                flex: 2,
+                                marginBottom: 25,
+                            }}
+                        >
+                            No Data
+                        </Text>
+                    )) || (
+                        <FlatList
+                            style={{
+                                flex: 2,
+                                marginBottom: 25,
+                            }}
+                            data={dataList}
+                            renderItem={({ item }) =>
+                                ((selectedFilter !== "0" &&
+                                    item.status === selectedFilter) ||
+                                    selectedFilter === "0") && (
+                                    <TaskItem
+                                        todo={item}
+                                        handleCheck={handleCheck}
+                                        handleDelete={handleDelete}
+                                    />
+                                )
+                            }
+                            keyExtractor={(item) => item.id}
+                        />
+                    )}
+                </SafeAreaView>
+            </ImageBackground>
         </>
     );
 }

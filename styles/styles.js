@@ -3,7 +3,7 @@ export const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginBottom: 20,
-        backgroundColor: "#fff",
+        // backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
         paddingHorizontal: 10,
@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     title: {
         fontSize: 35,
         fontWeight: "bold",
-        backgroundColor: "#fff",
+        // backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
     },
@@ -52,16 +52,21 @@ export const styles = StyleSheet.create({
     },
     filterButton: {
         height: 40,
-        padding: 10,
+        paddingHorizontal: 20,
         marginHorizontal: 5,
-        backgroundColor: "#eee",
-        borderRadius: 5,
+        textAlign: "center",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#DDDDDD",
+        borderRadius: 20,
+    },
+
+    filterButtonText: {
+        color: "#000",
     },
     selectedFilterButton: {
         backgroundColor: "#007BFF",
-    },
-    filterButtonText: {
-        color: "#000",
+        color: "#fff",
     },
     filterContainer: {
         flexDirection: "row",
@@ -97,5 +102,10 @@ export const styles = StyleSheet.create({
         color: "white",
         fontWeight: "bold",
         textAlign: "center",
+    },
+    background: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
