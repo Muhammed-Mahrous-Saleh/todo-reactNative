@@ -7,7 +7,6 @@ import {
     View,
     SafeAreaView,
 } from "react-native";
-import InputField from "../components/InputField";
 import { styles } from "../styles/styles";
 import TaskItem from "../components/TaskItem";
 import FilterOptions from "../components/FilterOptions";
