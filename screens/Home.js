@@ -18,6 +18,7 @@ import FilterOptions from "../components/FilterOptions";
 import { useEffect, useState } from "react";
 import AddForm from "../components/AddForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Todos from "../components/Todos";
 
 export default function Home() {
     const [selectedFilter, setSelectedFilter] = useState("0");
@@ -140,38 +141,28 @@ export default function Home() {
                     </Text>
                     <AddForm handleAddTask={handleAddTask} />
                     <View style={styles.divider} />
-                    <FilterOptions
-                        handleFilterSelect={handleFilterSelect}
-                        selectedFilter={selectedFilter}
-                    />
+                    {dataList.length !== 0 && (
+                        <FilterOptions
+                            handleFilterSelect={handleFilterSelect}
+                            selectedFilter={selectedFilter}
+                        />
+                    )}
                     {(dataList.length === 0 && (
                         <Text
                             style={{
                                 flex: 2,
                                 marginBottom: 25,
+                                fontSize: 20,
                             }}
                         >
-                            No Data
+                            Add Task to start 😊
                         </Text>
                     )) || (
-                        <FlatList
-                            style={{
-                                flex: 2,
-                                marginBottom: 25,
-                            }}
-                            data={dataList}
-                            renderItem={({ item }) =>
-                                ((selectedFilter !== "0" &&
-                                    item.status === selectedFilter) ||
-                                    selectedFilter === "0") && (
-                                    <TaskItem
-                                        todo={item}
-                                        handleCheck={handleCheck}
-                                        handleDelete={handleDelete}
-                                    />
-                                )
-                            }
-                            keyExtractor={(item) => item.id}
+                        <Todos
+                            dataList={dataList}
+                            handleDelete={handleDelete}
+                            handleCheck={handleCheck}
+                            selectedFilter={selectedFilter}
                         />
                     )}
                 </SafeAreaView>

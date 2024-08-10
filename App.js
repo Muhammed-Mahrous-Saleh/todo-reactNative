@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CompletedTasks from "./screens/CompletedTasks";
 import StackRoute from "./shared/StackRoute";
 import { Provider } from "react-redux";
+import store from "./redux/store";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
