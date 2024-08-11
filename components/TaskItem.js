@@ -21,10 +21,24 @@ export default function TaskItem({ todo, handleCheck, handleDelete }) {
             }}
         >
             <View>
-                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                <Text
+                    style={{
+                        fontSize: 22,
+                        fontWeight: "bold",
+                        textDecorationLine:
+                            todo.status === "2" ? "line-through" : "none",
+                    }}
+                >
                     {todo.title}
                 </Text>
-                <Text>{todo.comment}</Text>
+                <Text
+                    style={{
+                        textDecorationLine:
+                            todo.status === "2" ? "line-through" : "none",
+                    }}
+                >
+                    {todo.comment}
+                </Text>
             </View>
             <View
                 style={{
