@@ -2,10 +2,17 @@ import React from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { styles } from "../styles/styles";
 import uuid from "react-native-uuid";
+import { addTodo } from "../redux/slices/todo.slice";
+import { useDispatch } from "react-redux";
 
-export default function AddForm({ handleAddTask }) {
+export default function AddForm({}) {
     const [titleText, setTitleText] = React.useState("");
     const [descText, setDescText] = React.useState("");
+    const dispatch = useDispatch();
+
+    const handleAddTask = (todo) => {
+        dispatch(addTodo(todo));
+    };
     return (
         <View style={{ display: "flex", gap: 15 }}>
             <TextInput

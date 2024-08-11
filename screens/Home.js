@@ -19,66 +19,42 @@ import { useEffect, useState } from "react";
 import AddForm from "../components/AddForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Todos from "../components/Todos";
+import { storeData, retrieveData } from "../shared/db_connect";
+import { addTodo, removeTodo, retrieveTodos } from "../redux/slices/todo.slice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Home() {
     const [selectedFilter, setSelectedFilter] = useState("0");
-    const [dataList, setDataList] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState(null);
-
-    const _storeData = async (data) => {
-        try {
-            const jsonValue = JSON.stringify(data);
-            await AsyncStorage.setItem("toDoTasks", jsonValue);
-            setDataList(data);
-        } catch (error) {
-            console.error("Failed to store data:", error);
-        }
-    };
-
-    const _retrieveData = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem("toDoTasks");
-            if (jsonValue !== null) {
-                setDataList(JSON.parse(jsonValue));
-            } else {
-                _storeData([]); // Initialize with an empty array if no data is found
-            }
-        } catch (error) {
-            console.error("Failed to retrieve data:", error);
-        }
-    };
+    const dispatch = useDispatch();
+    const {
+        todos: dataList,
+        loading,
+        error,
+    } = useSelector((state) => state.todo);
 
     useEffect(() => {
-        _retrieveData();
+        (async () => {
+            const retrievedData = await retrieveData();
+            dispatch(retrieveTodos(retrievedData));
+        })();
     }, []);
 
     const handleFilterSelect = (id) => {
         setSelectedFilter(id);
     };
-    const handleCheck = (task) => {
-        const updatedData = dataList.map((item) =>
-            item.id !== task.id
-                ? item
-                : task.status === "1"
-                ? { ...item, status: "2" }
-                : { ...item, status: "1" }
-        );
-        _storeData(updatedData);
-    };
+
     const handleDelete = (task) => {
         setModalVisible(true);
         setTaskToDelete(task);
     };
-    const handleDeleteAfterConfirm = (task) => {
-        const updatedData = dataList.filter((item) => item.id !== task.id);
-        _storeData(updatedData);
+
+    const handleDeleteAfterConfirm = () => {
+        dispatch(removeTodo(taskToDelete.id));
         setModalVisible(!modalVisible);
     };
-    const handleAddTask = (task) => {
-        const updatedData = [task, ...dataList];
-        _storeData(updatedData);
-    };
+
     return (
         <>
             <ImageBackground
@@ -139,7 +115,7 @@ export default function Home() {
                     <Text style={{ ...styles.title, marginBottom: 15 }}>
                         TODO APP
                     </Text>
-                    <AddForm handleAddTask={handleAddTask} />
+                    <AddForm />
                     <View style={styles.divider} />
                     {dataList.length !== 0 && (
                         <FilterOptions
@@ -159,10 +135,8 @@ export default function Home() {
                         </Text>
                     )) || (
                         <Todos
-                            dataList={dataList}
-                            handleDelete={handleDelete}
-                            handleCheck={handleCheck}
                             selectedFilter={selectedFilter}
+                            handleDelete={handleDelete}
                         />
                     )}
                 </SafeAreaView>

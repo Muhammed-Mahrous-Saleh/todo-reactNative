@@ -2,9 +2,16 @@ import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useDispatch } from "react-redux";
+import { markAsDone, removeTodo } from "../redux/slices/todo.slice";
 
-export default function TaskItem({ todo, handleCheck, handleDelete }) {
+export default function TaskItem({ todo, handleDelete }) {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const handleCheck = () => {
+        dispatch(markAsDone(todo.id));
+    };
     return (
         <TouchableOpacity
             onPress={() => navigation.navigate("TodoDetails", { todo })}
@@ -57,12 +64,14 @@ export default function TaskItem({ todo, handleCheck, handleDelete }) {
                     color={todo.status === "2" ? "green" : "gray"}
                     onPress={() => handleCheck(todo)}
                 />
-                <MaterialCommunityIcons
-                    name="trash-can"
-                    size={20}
-                    color="red"
-                    onPress={() => handleDelete(todo)}
-                />
+                {handleDelete ? (
+                    <MaterialCommunityIcons
+                        name="trash-can"
+                        size={20}
+                        color="red"
+                        onPress={() => handleDelete(todo)}
+                    />
+                ) : null}
             </View>
         </TouchableOpacity>
     );
